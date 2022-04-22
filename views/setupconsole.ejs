@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style>
+		fieldset {
+			border: 1px groove;
+		}
+
+		input[type='text'] {
+			font-family: Arial;
+		}
+
+	</style>
+</head>
+
+<body>
+	<form action="/go" method="post">
+		<table>
+			<tr>
+				<td valign="top">
+					<fieldset>
+						<legend>Backend Connectivity Options</legend>
+						<table>
+							<tr>
+								<td>
+									OData Service
+								</td>
+								<td>
+									<input type="text" name="backend_service" size="70" id="backend_service" value="<%= screen_get_backend_service %>" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									OData Service User
+								</td>
+								<td>
+									<input type="text" name="service_user" id="service_user" value="<%= screen_backend_service_user %>" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									OData Service Password
+								</td>
+								<td>
+									<input type="password" name="service_password" id="service_password" value="<%= screen_backend_service_password %>" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Cloud Connector Location ID
+								</td>
+								<td>
+									<input type="text" name="location_id" id="location_id" size="50" value="<%= screen_connector_location_id %>" />
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Availability check URL
+								</td>
+								<td>
+									<input type="text" name="backend_url" value="<%= backend_url %>" size="50" /><br />
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Anomality update URL
+								</td>
+								<td>
+									<input type="text" name="anomality_url" value="<%= anomality_url %>" size="50" /><br />
+								</td>
+							</tr>
+
+
+							<tr>
+								<td>
+									Connection timeout (milliseconds)
+								</td>
+								<td>
+									<input type="text" name="connection_timeout" value="<%= screen_connector_timeout %>" size="6" />
+								</td>
+							</tr>
+
+
+						</table>
+					</fieldset>
+
+					<fieldset>
+						<legend>Scope Provider Options </legend>
+						<table>
+							<tr>
+								<td>
+									Scenario
+								</td>
+								<td>
+									<input type="text" name="tech_scenario" value="T_SYS_MON" size="70" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Context name mask
+								</td>
+								<td>
+									<input type="text" name="context_name" value="*" size="70" />
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Metric tech name mask
+								</td>
+								<td>
+									<input type="text" name="metric_name" value="*" size="70" />
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+
+				</td>
+				<td valign="top">
+
+					<fieldset>
+						<legend>Administration</legend>
+						<table>
+							<tr>
+								<td>
+									Collector starts with app restart
+								</td>
+								<td>
+									<input type="radio" name="autocollect" id="autocollectOn" value="true">On<br>
+									<input type="radio" name="autocollect" id="autocollectOff" value="false">Off<br>
+								</td>
+							</tr>
+							<tr>
+
+								<td>
+									Watchdog starts with collector
+								</td>
+								<td>
+									<input type="radio" name="autowatchdog" id="autowatchdogOn" value="true">On<br>
+									<input type="radio" name="autowatchdog" id="autowatchdogOff" value="false">Off<br>
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+
+					<fieldset>
+						<legend>Email options</legend>
+						<table>
+							<tr>
+								<td>
+									Host
+								</td>
+								<td>
+									<input type="text" name="email_host" value="<%= email_host %>" size="70" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Port
+								</td>
+								<td>
+									<input type="text" name="email_port" value="<%= email_port %>" size="70" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									User
+								</td>
+								<td>
+									<input type="text" name="email_user" value="<%= email_user %>" size="70" />
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Password
+								</td>
+								<td>
+									<input type="password" name="email_password" value="<%= email_password %>" size="70" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Sender
+								</td>
+								<td>
+									<input type="text" name="email_sender" value="<%= email_sender %>" size="70" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Receiver
+								</td>
+								<td>
+									<input type="text" name="email_receiver" value="<%= email_receiver %>" size="70" />
+								</td>
+							</tr>
+
+						</table>
+
+					</fieldset>
+
+
+				</td>
+			</tr>
+			<tr>
+				<td valign="top">
+					<select name="selected_action" id="selected_action" onclick="validateEntries()">
+						<option value="update_config">Save and apply</option>
+						<option value="get_mai_scope">Refill Scope</option>
+						<option value="append_mai_scope">Append Scope</option>
+						<option value="collector_start">Collector On</option>
+						<option value="collector_stop">Collector Off</option>
+						<option value="watchdog_start">Watchdog On</option>
+						<option value="watchdog_stop">Watchdog Off</option>
+						<option value="housekeeper_start">Pushes data housekeeper On</option>
+						<option value="housekeeper_stop">Pushes data housekeeper Off</option>
+						<option value="send_test_email">Send test email</option>
+						<option value="call_backend">Check backend availability</option>
+						<option value="clear_mai_scope">Clear scope</option>
+						<!--<option value="zcollector_run">zzzcollector_runzzz</option>-->
+
+					</select>
+					<input type="submit" value="  GO  " />
+
+				</td>
+				<td valign="top">
+				</td>
+			</tr>
+		</table>
+		<script>
+			// Setting watchdog radio button
+
+			var autowatchdog = '<%= autowatchdog %>';
+			var watchRadioBtnOn = document.getElementById("autowatchdogOn");
+			var watchRadioBtnOff = document.getElementById("autowatchdogOff");
+
+			if (autowatchdog === 'true') {
+				watchRadioBtnOn.checked = true;
+				watchRadioBtnOff.checked = false;
+			} else {
+				watchRadioBtnOn.checked = false;
+				watchRadioBtnOff.checked = true;
+			}
+
+			// Setting collector radio button
+
+			var autocollect = '<%= autocollect %>';
+			var collectRadioBtnOn = document.getElementById("autocollectOn");
+			var collectRadioBtnOff = document.getElementById("autocollectOff");
+
+			if (autocollect === 'true') {
+				collectRadioBtnOn.checked = true;
+				collectRadioBtnOff.checked = false;
+			} else {
+				collectRadioBtnOn.checked = false;
+				collectRadioBtnOff.checked = true;
+			}
+
+
+			function validateEntries() {
+
+				var selected_action = document.getElementById('selected_action').value;
+
+				if (selected_action === 'get_mai_scope') {
+					if (confirm('Action will rewrite current MAI scope in database. Proceed?')) {
+						brake;
+						return;
+					} else {
+						window.location.reload(true);
+					} // if (confirm ...
+				} // if (selected_action === 'get_mai_scope')
+
+
+				if (selected_action === 'clear_mai_scope') {
+					if (confirm('Action will delete current MAI scope in database. Proceed?')) {
+						brake;
+						return;
+					} else {
+						window.location.reload(true);
+					} // if (confirm ...
+				} // if (selected_action === 'get_mai_scope')
+
+				if (selected_action === 'clear_metric_storage') {
+
+
+					if (confirm('Action will delete all monitoring snapshots from a storage. Proceed?')) {
+						brake;
+						return;
+					} else {
+						;
+					} // if (confirm ...
+				} // if (selected_action === 'clear_metric_storage')
+
+				if (selected_action === 'collector_start') {
+
+					var execution_environment = '<%= execution_environment %>';
+
+					if (
+						(document.getElementById('backend_service').value !== '') &&
+						(document.getElementById('service_user').value !== '') &&
+						(document.getElementById('service_password').value !== '') &&
+						((document.getElementById('location_id').value !== '') || (execution_environment !== 'BTP'))
+					) {
+
+					} else {
+
+
+						alert('Collector cannot be scheduled without maintained data for Backend Service, Backend Credentials and Location ID');
+						window.location.reload(true)
+					} // if ((document.getElementById('location_id')...
+				} // if (selected_action === 'collector_start')
+			} // function validateEntries()
+
+		</script>
+	</form>
+
+
+
+
+
+
+</body>
+
+</html>
+
+<td>
+</td>

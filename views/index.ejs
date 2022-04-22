@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>sap mai interface</title>
+	<style>
+		body {
+			font-family: Arial;
+		}
+
+		/* Style the tab */
+		.tab {
+			overflow: hidden;
+			border: 1px solid #ccc;
+			background-color: #f1f1f1;
+		}
+
+		/* Style the buttons inside the tab */
+		.tab button {
+			background-color: inherit;
+			float: left;
+			border: none;
+			outline: none;
+			cursor: pointer;
+			padding: 14px 16px;
+			transition: 0.3s;
+			font-size: 17px;
+		}
+
+
+		/* Change background color of buttons on hover */
+		.tab button:hover {
+			background-color: #ddd;
+		}
+
+		/* Create an active/current tablink class */
+		.tab button.active {
+			background-color: #ccc;
+		}
+
+		/* Style the tab content */
+		.tabcontent {
+			display: none;
+			padding: 6px 10px;
+			border: 1px solid #ccc;
+			border-top: none;
+		}
+
+
+		.highlightgreen {
+			background-color: green;
+		}
+
+		.highlightred {
+			background-color: red;
+		}
+
+		button.green {
+			background-color: #bdf0b9;
+			float: right;
+			border: none;
+			outline: none;
+			cursor: pointer;
+			padding: 14px 16px;
+			transition: 0.3s;
+			font-size: 17px;
+		}
+
+		button.red {
+			background-color: #ffc7c9;
+			float: right;
+			border: none;
+			outline: none;
+			cursor: pointer;
+			padding: 14px 16px;
+			transition: 0.3s;
+			font-size: 17px;
+		}
+		button.transparent {
+			background-color: #f1f1f1;
+			float: right;
+			border: none;
+			outline: none;
+			cursor: pointer;
+			padding: 14px 16px;
+			transition: 0.3s;
+			font-size: 17px;
+		}
+	</style>
+
+</head>
+
+<body>
+
+
+
+	<div class="tab">
+		<button class="tablinks" onclick="openTab(event, 'Setup')" id="defaultOpen">CONTROL</button>
+		<button class="tablinks" onclick="openTab(event, 'Scope')">SCOPE</button>
+		<button class="tablinks" onclick="openTab(event, 'Status')">PUSHES</button>
+		<button class="tablinks" onclick="window.location.pathname = '/monitor'">SNAPSHOTS</button>
+		<!--<button class="tablinks" onclick="window.location.pathname = '/logout'">LOGOUT</button> -->
+		<span id="watchdog_status"></span>
+		<span id="collector_status"></span>
+		<span id="execution_environment"><button class="transparent"><%= execution_environment %></button></span>
+	</div>
+
+	<div id="Setup" class="tabcontent">
+		<% include setupconsole.ejs %>
+
+	</div>
+
+	<div id="Scope" class="tabcontent">
+		<% include scope.ejs %>
+	</div>
+
+	<div id="Status" class="tabcontent">
+		<% include status.ejs %>
+	</div>
+
+	<br />
+	Last action server timestamp: <%= servertimestamp %><br />
+	Last action server time: <%= servertime %><br />
+	Last server message: <%= server_message %><br />
+
+	<script>
+		document.getElementById("defaultOpen").click();
+		//openTab(event, 'Setup');
+
+		function openTab(evt, tabName) {
+			var i, tabcontent, tablinks;
+			const http = new XMLHttpRequest();
+
+
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				;
+				tabcontent[i].style.display = "none";
+			}
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+			document.getElementById(tabName).style.display = "block";
+			evt.currentTarget.className += " active";
+
+		}
+
+		var collector_state = '<%= collectorstate %>';
+
+		if (collector_state == "scheduled every 5 minutes") {
+			document.getElementById('collector_status').innerHTML = '<button class="green">C</button>';
+		} else {
+			document.getElementById('collector_status').innerHTML = '<button class="red">C</button>';
+		}
+
+		var watchdog_state = '<%= watchdogstate %>';
+
+		if (watchdog_state == "scheduled every 10 minutes") {
+			document.getElementById('watchdog_status').innerHTML = '<button class="green">W</button>';
+		} else {
+			document.getElementById('watchdog_status').innerHTML = '<button class="red">W</button>';
+		}
+	</script>
+
+
+</body>
+
+</html>

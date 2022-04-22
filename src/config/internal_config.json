@@ -1,0 +1,29 @@
+{
+	"cloud_connector": {
+		"location_id": "",
+		"connection_timeout": "10000"
+	},
+	"odata": {
+		"backend_service": "zzzz/sap/opu/odata/sap/ZAI_OPS_PROVIDER_SRV/"
+	},
+	"backend_credentials": {
+		"service_user": "",
+		"service_pass": ""
+	},
+	"admin": {
+		"backend_url": "zzzz/sap/public/ping",
+		"anomality_url": "zzzz/calculate_anomaly_score_metric_list",
+		"autocollect": "true",
+		"autowatchdog": "true",
+		"send_emails": "true"
+	},
+	"email": {
+		"host": "smtp.office365.com",
+		"port": "587",
+		"user": "zzzz",
+		"password": "zzzz",
+		"sender": "cloudextension@hotmail.com",
+		"receiver": "andrew.kusnetsov@sap.com"
+	},
+	"execution_environment": "XSA"
+}

@@ -1,0 +1,19 @@
+---
+applications:
+- name: mai_interface
+  port: 51031
+  memory: 512M
+  disk_quota: 128M
+  path: C:\Work\Delivery\Research\_smartmon_master_source\node.js\master_mai_interface
+  services:
+  - Smart_Monitoring_XSUAA
+  - HANADB_XSA
+
+- name: approuter
+  buildpack: sap_nodejs_buildpack
+  port: 51032
+  path: approuter
+  services:
+  - Smart_Monitoring_XSUAA
+  env:
+    destinations: '[{"name":"mai-interface","url":"https://zzzzzzzzz","forwardAuthToken": true}]'

@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html>
+<style>
+	body {
+		font-family: Arial;
+	}
+
+	tableA {
+		margin-right: 10px;
+		width: 300px;
+		table-layout: fixed;
+	}
+
+	th.pushes {
+		border-bottom: 1px solid #ddd;
+		text-align: left;
+		width: 15%;
+	}
+
+	th.size {
+		border-bottom: 1px solid #ddd;
+		text-align: left;
+		width: 10%;
+	}
+
+	.refresh {
+		background-color: #f1f1f1;
+		color: black;
+		padding: 8px 12px;
+		border-radius: 2px;
+		border-color: #ccc;
+	}
+
+	#refresh_button {
+		position: fixed;
+		top: 65px;
+		right: 12px;
+	}
+
+</style>
+
+<p id="run_counter">
+
+	<form action="/refresh_push" method="POST">
+
+		<div id="refresh_button">
+			<button class="refresh" type="submit">TRUNCATE LOG</button>
+		</div>
+	</form>
+</p>
+
+
+<table id='tableA'>
+	<tbody id="collector_runs">
+	</tbody>
+</table>
+<script>
+	var received_collector_runs = '<%= collectorruns %>';
+	var collector_runs = [];
+	var temp = '';
+	var status = '<%= collectorstate %>';
+	var status_shift = status.toUpperCase();
+
+
+	for (let i = 0; i < received_collector_runs.length; i++) {
+		if (received_collector_runs[i] !== ',') {
+
+			temp = temp + received_collector_runs[i];
+
+		}
+
+		if (received_collector_runs[i] == ',' || i == (received_collector_runs.length - 1)) {
+
+			collector_runs.push(temp);
+
+			temp = '';
+
+		}
+	}
+
+	var data = '';
+	if (collector_runs.length > 0) {
+		data += '<tr><th class="pushes">Timestamp (UTC)</th><th class="size">Metrics table size (MB)</th><th class="pushes">Metrics count</th><th class="pushes">Total backend call time (ms)</th><th class="pushes">Backend snapshot pull time (ms)</th><th class="pushes">Last Backend ping time (ms)</th></tr>';
+
+		for (i = 0; i < collector_runs.length; i++) {
+			var res = collector_runs[i].split('|');
+			data += '<tr>';
+			for (j = 0; j < res.length; j++) {
+				data += '<td>' + res[j] + '</td>';
+			}
+			data += '</tr>';
+		}
+	}
+
+	document.getElementById('collector_runs').innerHTML = data;
+	document.getElementById('run_counter').innerHTML = 'LAST ' + collector_runs.length + ' PUSHES EXECUTED' + '<br>' + 'COLLECTOR STATUS: ' + status_shift;
+
+</script>
+
+
+</html>

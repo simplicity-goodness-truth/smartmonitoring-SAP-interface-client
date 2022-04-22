@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>mai snapshots</title>
+	<style>
+		body {
+			font-family: Arial;
+			font-size: 10px;
+			background-color: black;
+			color: green;
+		}
+
+		table {
+			margin-right: 50px;
+			width: 100%;
+		}
+
+		th {
+			border-bottom: 1px solid #ddd;
+			text-align: left;
+			border-color: green;
+		}
+
+
+
+		.button {
+			background-color: black;
+			border: 1px solid green;
+			color: green;
+			padding: 14px 16px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 17px;
+
+			cursor: pointer;
+			border-radius: 1px;
+			position: fixed;
+		}
+
+		.main-header {
+			height: 62px;
+			background: black;
+			position: -webkit-sticky;
+			position: sticky;
+			top: 0;
+
+		}
+	</style>
+</head>
+
+<body>
+	<div class="main-header">
+
+		<button class="button" onclick="goBack()">EXIT</button>
+
+
+		<script>
+			function goBack() {
+				window.history.back();
+			}
+		</script>
+	</div>
+
+	<p id="snapshot_counter"><font size="3"><%= snapshots_count %> MONITORING RECORDS FETCHED (200 RECENT RECORDS ARE DISPLAYED)</font></p>
+
+	<table>
+		<tr>
+			<!--  <th>Managed Objects and Metrics</th> -->
+		</tr>
+		<tbody id="mai_snapshot">
+		</tbody>
+	</table>
+
+
+	<script>
+		var received_mai_snapshot = '<%= monitoring_values %>';
+		var mai_snapshot_array = [];
+		var temp = '';
+
+		for (let i = 0; i < received_mai_snapshot.length; i++) {
+			if (received_mai_snapshot[i] !== ',') {
+
+				temp = temp + received_mai_snapshot[i];
+
+			} else {
+
+				mai_snapshot_array.push(temp);
+
+				temp = '';
+
+			}
+		}
+
+		var data = '';
+		if (mai_snapshot_array.length > 0) {
+
+
+			data += '<tr><th>Fetch Timestamp</th><th>Context ID</th><th>Metric ID</th><th>MAI TSMP</th><th>MAI TSMP (UNIX)</th><th>Context Name</th><th>Metric Name</th><th>Mean Value</th><th>G2Y</th><th>Y2R</th><th>Sum</th><th>Count</th><th>Text</th></tr>';
+
+
+			for (i = 0; i < mai_snapshot_array.length; i++) {
+				var res = mai_snapshot_array[i].split('|');
+				data += '<tr>';
+				for (j = 0; j < res.length; j++) {
+					data += '<td>' + res[j] + '</td>';
+				}
+				data += '</tr>';
+			}
+
+		}
+
+		document.getElementById('mai_snapshot').innerHTML = data;
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,333 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+
+	<style>
+		body {
+			font-family: Arial;
+		}
+
+		input[type='submit'],
+		button,
+		[aria-label] {
+			cursor: pointer;
+		}
+
+		#spoiler {
+			display: none;
+		}
+
+		.commit {
+			background-color: #f1f1f1;
+			color: black;
+			padding: 6px 16px;
+			border-radius: 4px;
+			border-color: #ccc;
+
+		}
+
+		#commit_button {
+
+			margin-left: 95%;
+
+		}
+
+		table.scope {
+
+			table-layout: fixed;
+			white-space: nowrap;
+			width: 100%;
+		}
+
+		td.scopetd {
+			white-space: nowrap;
+			border-bottom: 1px solid #ddd;
+			overflow: hidden;
+			text-overflow: ellipsis;
+
+		}
+
+		th.id {
+			width: 14%;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+
+		th.threshold {
+			width: 5%;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+		
+		
+		th.date {
+			width: 10%;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+
+		th.shortext {
+			width: 16%;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+
+		th.contextname {
+			width: 16%;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+
+		th.metricname {
+			width: 16%;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+
+		.main-footer {
+			height: 65px;
+			background: #f1f1f1;
+			position: -webkit-sticky;
+			position: sticky;
+			bottom: 0;
+			margin-left: auto;
+			margin-right: 10px;
+
+		}
+
+		.main-header {
+			height: 135px;
+			background: #f1f1f1;
+			position: -webkit-sticky;
+			position: sticky;
+			top: 0;
+			margin-left: auto;
+			margin-right: 10px;
+		}
+
+	</style>
+</head>
+
+<body class>
+
+	<div class="main-header">
+
+		<table>
+			<tr>
+				<td>
+					<form action="/append_mai_scope" method="post">
+
+						<table>
+							<tr>
+
+							</tr>
+							<tr>
+								<td>
+									Scenario
+								</td>
+								<td>
+									<input type="text" name="tech_scenario" value="T_SYS_MON" size="40" />
+								</td>
+
+							</tr>
+							<tr>
+								<td>
+									Context name mask
+								</td>
+								<td>
+									<input type="text" name="context_name" value="*" size="40" />
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Metric tech name mask
+								</td>
+								<td>
+									<input type="text" name="metric_name" value="*" size="40" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+
+									<input type="submit" onclick="confirmAppend();" value="  +  " />
+									<button type="button" onClick="window.location.reload();"> RELOAD </button>
+								</td>
+
+							</tr>
+
+						</table>
+
+					</form>
+
+				</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>
+					<div id="counter"></div>
+
+					<p> Add more scope elements by specifying conditions and pressing '+' or remove scope elements by pressing 'X'. <br> To save changes after deletion press 'SAVE' button. </p>
+				</td>
+			</tr>
+		</table>
+
+
+	</div>
+
+
+	<p></p>
+
+	<font size="2" face="Arial">
+		<table class="scope">
+
+			<tbody id="managed_objects">
+
+			</tbody>
+		</table>
+	</font>
+
+	<p id="text_area"> </p>
+
+
+	<div class="main-footer">
+
+		<form action="/commitscope" method="POST">
+
+			<div id="commit_button">
+
+				<input type="hidden" id="modifiedScope" name="modifiedScope">
+				<br>
+				<button class="commit" type="submit">SAVE</button>
+			</div>
+		</form>
+	</div>
+
+
+
+	<script>
+
+		function confirmAppend() {
+
+			if (confirm('Append records to scope according to selected criteria?')) {
+				brake;
+				return;
+			} else {
+				window.location.reload(true);
+			} // if (confirm ...
+
+		}
+
+		var received_mai_scope = '<%= mai_scope %>';
+
+		if (received_mai_scope == 'null') {
+
+			document.getElementById('text_area').innerHTML = 'Current MAI scope is empty or internal database connection cannot be established. If this is a first execution, try to get scope from MAI backend';
+
+		} else {
+
+			document.getElementById('text_area').innerHTML = 'FETCHING, RELOAD PAGE...';
+		}
+
+		if (received_mai_scope.indexOf('|') > -1) {
+
+			document.getElementById('text_area').innerHTML = '';
+
+			var app = new function() {
+				this.el = document.getElementById('managed_objects');
+
+				var mai_scope_array = [];
+				var temp = '';
+				var TAB = "\t";
+
+
+				for (let i = 0; i < received_mai_scope.length; i++) {
+					if (received_mai_scope[i] !== ',') {
+
+						temp = temp + received_mai_scope[i];
+
+					} else {
+
+						mai_scope_array.push(temp);
+
+						temp = '';
+
+					}
+				}
+
+				this.managed_objects = mai_scope_array;
+
+				this.Count = function(data) {
+					var el = document.getElementById('counter');
+					var name = 'MONITORING DIRECTORY RECORD';
+					if (data) {
+						if (data > 1) {
+							name = 'MONITORING DIRECTORY RECORDS';
+						}
+						el.innerHTML = (data + 1) + ' ' + name;
+					} else {
+						el.innerHTML = 'NO ' + name;
+					}
+
+				};
+
+				this.FetchAll = function() {
+					var data = '';
+					if (this.managed_objects.length > 0) {
+						data += '<tr><th class="contextname">Context Name</th><th class="shortext">Short Text</th><th class="metricname">Metric Name</th><th class="id">Context ID</th><th class="id">Metric ID</th><th class="threshold">G2Y/Y2R</th><th class="date">Added on (local time)</th><th></th></tr>';
+
+						for (i = 0; i < this.managed_objects.length; i++) {
+							var res = this.managed_objects[i].split('|');
+							data += '<tr>';
+
+							for (j = 0; j < res.length; j++) {
+								data += '<td class="scopetd">' + res[j] + '</td>';
+							}
+
+							data += '<td><button onclick="app.Delete(' + i + ')">X</button></td>';
+							data += '</tr>';
+						}
+					}
+					this.Count(this.managed_objects.length);
+					return this.el.innerHTML = data;
+				};
+
+				this.Delete = function(item) {
+					// Delete the current row
+
+					var deleted_context_id;
+					var deleted_event_type_id;
+					var deleted_line_parsed = this.managed_objects[item].split('|');
+
+					deleted_context_id = deleted_line_parsed[3];
+					deleted_event_type_id = deleted_line_parsed[4];
+
+					document.getElementById("modifiedScope").value = deleted_context_id + '|' + deleted_event_type_id + ',' + document.getElementById("modifiedScope").value;
+
+					this.managed_objects.splice(item, 1);
+
+					// Display the new list
+					this.FetchAll();
+
+
+				};
+
+			}
+
+			app.FetchAll();
+
+			function CloseInput() {
+				document.getElementById('spoiler').style.display = 'none';
+			}
+		}
+
+	</script>
+
+
+</body>
+
+</html>
